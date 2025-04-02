@@ -12,14 +12,31 @@ function goFullScreen() {
     }
 }
 
-// Audio Start Function
-function startAudio() {
+// Audio Handling
+function initializeAudio() {
     const audio = document.getElementById('background-audio');
     audio.volume = 0.5;
-    audio.play().then(() => {
-        document.getElementById('start-audio').style.display = 'none'; // Hide button on success
-    }).catch(error => {
-        console.error('Audio playback failed:', error);
+    audio.src = 'hypno.mp3';
+    audio.loop = true; // Ensure audio loops
+    
+    // Function to attempt playing audio
+    function playAudio() {
+        audio.play()
+            .then(() => {
+                console.log('Audio playing successfully');
+                document.getElementById('start-audio').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Audio playback failed:', error);
+                document.getElementById('start-audio').style.display = 'block';
+            });
+    }
+
+    // Add click event listener to the entire document
+    document.addEventListener('click', function handleFirstClick() {
+        playAudio();
+        // Remove the event listener after first successful play attempt
+        document.removeEventListener('click', handleFirstClick);
     });
 }
 
@@ -55,64 +72,3 @@ function updatePageImages() {
 
     pages.forEach(page => {
         let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * imagePool.length);
-        } while (usedIndices.has(randomIndex) && usedIndices.size < imagePool.length);
-
-        usedIndices.add(randomIndex);
-        const imageUrl = imagePool[randomIndex] || 'https://via.placeholder.com/1920x1080?text=No+Image';
-        page.style.backgroundImage = `url(${imageUrl})`;
-    });
-}
-
-// Trigger full-screen, fetch images, and set up click-to-play audio
-window.onload = function() {
-    goFullScreen();
-    fetchRandomImages();
-
-    const audio = document.getElementById('background-audio');
-    audio.volume = 0.5;
-    audio.src = 'hypno.mp3'; // Ensure this matches your audio file name
-    
-    // Play audio on first click
-    document.body.addEventListener('click', function playOnClick() {
-        audio.play().catch(error => {
-            console.log('Audio play failed:', error);
-            document.getElementById('start-audio').style.display = 'block';
-        });
-        // Remove event listener after first click
-        document.body.removeEventListener('click', playOnClick);
-    });
-};
-
-// Page Switching with Image Refresh
-const pages = document.querySelectorAll('.page');
-let currentPage = 0;
-
-function switchPage() {
-    pages[currentPage].classList.remove('active');
-    currentPage = (currentPage + 1) % pages.length;
-    pages[currentPage].classList.add('active');
-
-    if (currentPage === 0) {
-        updatePageImages();
-    }
-}
-
-setInterval(switchPage, 5000);
-
-// Falling Words
-const fallingWordsContainer = document.querySelector('.falling-words');
-const words = ['Relax', 'Sink', 'Drift', 'Obey', 'Fall', 'Deep'];
-
-function createFallingWord() {
-    const word = document.createElement('div');
-    word.classList.add('falling-word');
-    word.textContent = words[Math.floor(Math.random() * words.length)];
-    word.style.left = `${Math.random() * 100}vw`;
-    word.style.animationDuration = `${Math.random() * 5 + 3}s`;
-    fallingWordsContainer.appendChild(word);
-    word.addEventListener('animationend', () => word.remove());
-}
-
-setInterval(createFallingWord, 1000);
