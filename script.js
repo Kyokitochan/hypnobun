@@ -26,16 +26,16 @@ function startAudio() {
 // Global array to store fetched image URLs
 let imagePool = [];
 
-// Fetch 50 Random Images from Rule34 with "verybadboye" tag
+// Fetch 50 Random Images from Rule34 with "chastity_cage" tag
 async function fetchRandomImages() {
-    const url = 'https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=50&tags=verybadboye';
+    const url = 'https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=50&tags=chastity_cage';
 
     try {
         const response = await fetch(url);
         const data = await response.json();
         const posts = data || [];
 
-        if (posts.length === 0) throw new Error('No posts found for "verybadboye"');
+        if (posts.length === 0) throw new Error('No posts found for "chastity_cage"');
 
         imagePool = posts.slice(0, 50).map(post => post.file_url);
         updatePageImages();
@@ -65,28 +65,23 @@ function updatePageImages() {
     });
 }
 
-// Trigger full-screen, fetch images, and attempt audio playback
+// Trigger full-screen, fetch images, and set up click-to-play audio
 window.onload = function() {
     goFullScreen();
     fetchRandomImages();
 
     const audio = document.getElementById('background-audio');
     audio.volume = 0.5;
+    audio.src = 'hypno.mp3'; // Ensure this matches your audio file name
     
-    // Attempt to play audio immediately
-    audio.play().catch(error => {
-        console.log('Auto-play blocked:', error);
-        // Show fallback button if blocked
-        document.getElementById('start-audio').style.display = 'block';
-    });
-
-    // Retry after full-screen (some browsers allow after user gesture like full-screen)
-    document.addEventListener('fullscreenchange', () => {
-        if (document.fullscreenElement) {
-            audio.play().catch(() => {
-                document.getElementById('start-audio').style.display = 'block';
-            });
-        }
+    // Play audio on first click
+    document.body.addEventListener('click', function playOnClick() {
+        audio.play().catch(error => {
+            console.log('Audio play failed:', error);
+            document.getElementById('start-audio').style.display = 'block';
+        });
+        // Remove event listener after first click
+        document.body.removeEventListener('click', playOnClick);
     });
 };
 
