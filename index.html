@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypno Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" id="fullscreen-container">
+        <div class="page active" data-page="1">Stare into the void...</div>
+        <div class="page" data-page="2">Let your mind drift...</div>
+        <div class="page" data-page="3">Sink deeper...</div>
+        <div class="page" data-page="4">All thoughts fade...</div>
+
+        <div class="spiral">
+            <div class="ring ring1"></div>
+            <div class="ring ring2"></div>
+            <div class="ring ring3"></div>
+            <div class="ring ring4"></div>
+        </div>
+        <div class="falling-words"></div>
+    </div>
+
+    <button id="start-audio" style="display: none;" onclick="startAudio()">Start Audio</button>
+    <audio id="background-audio" autoplay loop>
+        <source src="hypno.MP3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
